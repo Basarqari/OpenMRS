@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>OpenMRS Client</title>
+
+	<!-- WinJS references -->
+	<link href="WinJS/css/ui-light.css" rel="stylesheet" />
+	<script src="WinJS/js/base.js"></script>
+	<script src="WinJS/js/ui.js"></script>
+
+	<!-- OpenMRSClient references -->
+	<link href="/css/default.css" rel="stylesheet" />
+	<script src="/js/jquery-2.1.4.min.js"></script>
+	<script src="/js/default.js"></script>
+</head>
+<body class="win-type-body" id="mBody">
+	<div id="app" class="large">
+		<div class="splitView" data-win-control="WinJS.UI.SplitView" data-win-options="{
+            openedDisplayMode: 'overlay',
+            closedDisplayMode: 'inline'
+         }">
+			<!-- Pane area -->
+			<div id="menu">
+				<div class="header">
+					<button class="win-splitviewpanetoggle"
+							data-win-control="WinJS.UI.SplitViewPaneToggle"
+							data-win-options="{ splitView: select('.splitView') }"></button>
+					<div class="title">  Menu  </div>
+				</div>
+				<div class="nav-commands">
+					<div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Home', icon: 'home', oninvoked: mySplitView.homeClicked}"></div>
+					<div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Find Patients', icon: 'zoom', oninvoked: mySplitView.patientClicked}"></div>
+					<div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Capture Vitals', icon: 'edit', oninvoked: mySplitView.xxxClicked}"></div>
+					<div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Active Visits', icon: 'calendar', oninvoked: mySplitView.visitsClicked}"></div>
+					<div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Settings', icon: 'settings', oninvoked: mySplitView.settingsClicked}"></div>
+					<div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Logout', icon: 'back', oninvoked: mySplitView.logoutClicked}"></div>
+				</div>
+			</div>
+
+			<!-- Content area -->
+			<button id="menuButton" class="win-splitviewpanetoggle"
+					data-win-control="WinJS.UI.SplitViewPaneToggle"
+					data-win-options="{ splitView: select('.splitView') }"></button>
+			<div class="contenttext">
+				<div class="mainContent" id="login">
+					<h1 class="win-h1">OpenMRS</h1>
+					<h4 class="win-h4">Server adress:</h4>
+					<input id="server" class="win-textarea" type="URL" placeholder="Server Url" value="http://devtest01.openmrs.org/openmrs" /><br />
+					<button id="checkUrlButton" onclick="checkUrlClickHandler" class="win-button"> Check Url </button>
+					<h4 class="win-h4">Username:</h4>
+					<input id="username" class="win-textarea" type="text" placeholder="Username" value="" />
+					<h4 class="win-h4">Password:</h4>
+					<input id="password" class="win-textarea" type="password" placeholder="Password" value="" /><br />
+					<button id="loginButton" onclick="loginClickHandler" class="win-button win-button-primary"> Login </button>
+				</div>
+				<div class="mainContent" id="homeContext">
+					<h1 class="win-h1"> Home </h1>
+					<h2 class="win-h2"> Welcome to OpenMRS. </h2>
+					<div class="dateBox">
+						<div id="time" class="win-h2"></div>
+						<div id="date" class="win-h4"></div>
+					</div>
+					<!-- Add some simple dashboard with actual status -->
+				</div>
+				<div class="mainContent" id="settings">
+					<h1 class="win-h1"> Settings </h1>
+					<div id="settingsContent">
+						<h3 class="win-h3"> About </h3>
+						<p>OpenMRS Client</p>
+						<p>Beta 0.1</p>
+					</div>
+					<!-- Add some simple settings -->
+				</div>
+				<div class="mainContent" id="findPatient">
+					<h1 class="win-h1"> Find Patients </h1><br />
+					<input id="searchLable" class="win-textarea" placeholder="Patient Name" type="text" value="" />
+					<button id="searchButton" onclick="searchClickHandler" class="win-button win-button-primary"> Search </button>
+					<div id="repeater" class="repeater" data-win-control="WinJS.UI.Repeater"
+						 data-win-options="{ data: Patients.data }">
+						<section id="patientListRepeater" data-win-control="Navigation.NavigationItem" data-win-bind="winControl.data: this">
+							<div><h2 id="name" data-win-bind="textContent: name"></h2></div>
+							<p data-win-bind="textContent: age"></p>
+							<p class="centralList"><i data-win-bind="textContent: gender"></i></p>
+							<p data-win-bind="textContent: birthdate"></p><br />
+							<p class="hiden" data-win-bind="textContent: uuid"></p>
+						</section>
+					</div>
+				</div>
+				<div class="mainContent" id="patientDetails">
+					<h1 class="win-h1"> Patient Details </h1><br />
+					<div id="patientDetailsRepeater" class="patientDetails" data-win-control="WinJS.UI.Repeater"
+						 data-win-options="{ data: Patients.data }">
+						<section>
+							<h4 class="win-h3"> Name </h4>
+							<h3 data-win-bind="textContent: name"></h3>
+							<h4 class="win-h3"> ID </h4>
+							<h3 data-win-bind="textContent: id"></h3>
+							<h4 class="win-h4"> Gender </h4>
+							<p data-win-bind="textContent: gender"></p>
+							<h4 class="win-h4"> Age </h4>
+							<p data-win-bind="textContent: age"></p>
+							<h4 class="win-h4"> Birthdate </h4>
+							<p data-win-bind="textContent: birthdate"></p><br />
+							<h4 class="win-h3"> Address </h4>
+							<p data-win-bind="textContent: address"></p>
+							<h4 class="win-h4"> City </h4>
+							<p data-win-bind="textContent: city"></p>
+							<h4 class="win-h4"> Postal Code </h4>
+							<p data-win-bind="textContent: postalCode"></p>
+							<h4 class="win-h4"> State </h4>
+							<p data-win-bind="textContent: state"></p>
+							<h4 class="win-h4"> Country </h4>
+							<p data-win-bind="textContent: country"></p>
+						</section>
+					</div>
+				</div>
+				<div class="mainContent" id="activeVisits">
+					<h1 class="win-h1"> Active Visits </h1><br />
+					<button id="prevButton" onclick="prevClickHandler" class="win-button win-button-primary"> Previous </button>
+					<button id="nextButton" onclick="nextClickHandler" class="win-button win-button-primary"> Next </button>
+					<div id="visitsRepeater" class="repeater" data-win-control="WinJS.UI.Repeater"
+						 data-win-options="{ data: Patients.visits }">
+						<section id="visitsListRepeater" data-win-control="" data-win-bind="winControl.data: this">
+							<div><h3 id="name" data-win-bind="textContent: name"></h3></div>
+							<p data-win-bind="textContent: date"></p>
+							<p class="centralList"><i data-win-bind="textContent: type"></i></p>
+							<p data-win-bind="textContent: place"></p>
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="dialog" data-win-control="WinJS.UI.ContentDialog" data-win-options="{
+		title: 'Error:',
+		secondaryCommandText: 'Back'
+		 }">
+	</div>
+</body>
+</html>
